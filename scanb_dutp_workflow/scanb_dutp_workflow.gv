@@ -1,0 +1,82 @@
+digraph G {
+    #label = "Simplified dUTP Workflow";
+    graph [splines=ortho];
+    newrank=true;
+
+    node[nodesep=0.1, ranksep=0.6, fontsize=15];
+    edge[weight=1.6];
+
+    node[shape="box", style="rounded", fontsize=12, fontname = "helvetica"]
+        start; end;
+    node[shape="rect", style="", fixedsize=true, width="2.4", height="0.75", fontsize=12, fontname = "helvetica", fillcolor = "#ffffff"]
+	mrna_purification; mrna_fragmentation; mrna_isolation; first_strand_synthesis;
+	second_strand_synthesis; cdna_isolation; adapter_ligation; cdna_size_selection;
+	second_strand_digestion; pcr_amplification; pcr_size_selection; quantification;
+
+    # define nodes
+    start [label="1 &micro;g total RNA"];
+    mrna_purification [label = "mRNA purification"];
+    mrna_fragmentation [label = "mRNA fragmentation"];
+    mrna_isolation [label = "mRNA isolation"];
+    first_strand_synthesis [label = '1@^{st}  strand cDNA synthesis'];  # extra whitespace needed since the supscript gobbles one up.
+    second_strand_synthesis [label = '2@^{nd}  strand cDNA synthesis <br /> with dUTP'];  # whitespace needed, see above
+    cdna_isolation [label = "cDNA isolation"];
+    adapter_ligation [label = "Adapter ligation"];
+    cdna_size_selection [label = "Size selection"];
+    second_strand_digestion [label = '2@^{nd}  strand cDNA digestion'];  # whitespace needed, see above
+    pcr_amplification [label = "PCR amplification"];
+    pcr_size_selection[label = "Size selection"];
+    quantification [label = "Quantification"];
+    end [label = "Clustering and Sequencing"];
+
+    # define edges
+    start -> mrna_purification;
+    mrna_purification -> mrna_fragmentation;
+    mrna_fragmentation -> mrna_isolation;
+    mrna_isolation -> first_strand_synthesis;
+    first_strand_synthesis -> second_strand_synthesis[constraint=false];  # loose constraints to make cross-cluster edges render nicely
+    second_strand_synthesis -> cdna_isolation;
+    cdna_isolation -> adapter_ligation;
+    adapter_ligation -> cdna_size_selection;
+    cdna_size_selection -> second_strand_digestion[constraint=false];  # loose constraints to make cross-cluster edges render nicely
+    second_strand_digestion -> pcr_amplification;
+    pcr_amplification -> pcr_size_selection;
+    pcr_size_selection -> quantification;
+    quantification -> end;
+
+    subgraph left {
+        style=invis;
+
+        start;
+        mrna_purification;
+        mrna_fragmentation;
+        mrna_isolation;
+        first_strand_synthesis;
+        l0[style=invis]
+    }
+
+    subgraph middle {
+        style=invis;
+
+        s0[style=invis];
+        second_strand_synthesis;
+        cdna_isolation;
+        adapter_ligation;
+        cdna_size_selection;
+        s1[style=invis];
+    }
+
+    subgraph right {
+        style=invis;
+
+        r0[style=invis];
+        second_strand_digestion;
+        pcr_amplification;
+        pcr_size_selection;
+        quantification [label = "Quantification"];
+        end;
+    }
+
+    { rank=same; mrna_purification; second_strand_synthesis; second_strand_digestion; }
+
+}
