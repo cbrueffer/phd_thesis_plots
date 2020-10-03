@@ -1,0 +1,45 @@
+digraph G {
+    #label = "General RNA-seq Workflow";
+    graph [splines=ortho];
+    newrank=true;
+
+    node[nodesep=0.1, ranksep=0.6, fontsize=15];
+    edge[weight=1.6];
+
+    node[shape="box", style="rounded", fontsize=12, fontname = "helvetica"]
+        start; end;
+    node[shape="rect", style="", fixedsize=true, width="2.4", height="0.75", fontsize=12, fontname = "helvetica", fillcolor = "#ffffff"]
+	    base_calling; demultiplexing; alignment; duplicate_marking; trimming; expression_estimation;
+	    variant_calling;
+	node[shape="diamond", style="", fixedsize=true, width="2.4", height="0.75"]
+		clean_fastq_files; bam_files;
+
+    # define nodes
+    start [label="Sequencer base-calling files"];
+    base_calling [label="Base calling"];
+    demultiplexing [label="Sample Demultiplexing"];
+#    clean_fastq_files [label="Clean FASTQ files"];
+#    bam_files [label="Aligned BAM files"];
+#    alignment [label="Alignment"];
+#    duplicate_marking [label="Duplicate Marking"];
+    trimming [label="Adapter/Quality Trimming"];
+#    expression_estimation [label="Expression estimation"];
+#    differential_expression = [label="Differential expression"];
+#    variant_calling [label="Variant calling"];
+#    variant_anno = [label="Variant annotation"];
+#    end [label = "End"];
+
+    # define edges
+    start -> base_calling;
+    base_calling -> demultiplexing;
+    demultiplexing -> trimming;
+#    trimming -> clean_fastq_files;
+#    clean_fastq_files -> alignment;
+#    alignment -> duplicate_marking;
+#    duplicate_marking -> bam_files;
+#    bam_files -> expression_estimation;
+#    bam_files -> variant_calling;
+#    expression_estimation -> end;
+#    variant_calling -> end;
+
+}

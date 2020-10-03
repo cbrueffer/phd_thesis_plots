@@ -1,0 +1,30 @@
+digraph G {
+    margin=0;
+    graph [splines=ortho, nodesep=0.5];
+    newrank=true;
+
+    node[nodesep=0.1, ranksep=0.6, fontsize=15];
+    edge[weight=1.6];
+
+    node[shape="box", style="rounded", fontsize=12, fontname = "helvetica"]
+        start; end;
+    node[shape="rect", style="", fixedsize=true, width="2.4", height="0.75", fontsize=12, fontname = "helvetica", fillcolor = "#ffffff"]
+	    rna_extraction; library_prep; sequencing; data_analysis;
+
+    # define nodes
+    start [label="Sample"];
+    rna_extraction [label="RNA Extraction"];
+    library_prep [label="Library Preparation"];
+    sequencing [label="Sequencing"];
+    data_analysis [label="Data Analysis"];
+    end [label="Results"];
+
+    # define edges
+    start -> rna_extraction;
+    rna_extraction -> library_prep;
+    library_prep -> sequencing;
+    sequencing -> data_analysis;
+    data_analysis -> end
+
+    { rank=same; rna_extraction; sequencing; }
+}
