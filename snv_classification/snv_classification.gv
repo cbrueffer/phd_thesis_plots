@@ -1,0 +1,62 @@
+#
+# SNV classification
+#
+
+digraph G {
+    graph [splines=ortho];
+    newrank=true;
+
+    node[nodesep=0.1, ranksep=0.6, fontsize=15];
+    edge[weight=1.6];
+
+    node[shape="rect", style="", fixedsize=true, width="2.4", height="0.75", fontsize=12, fontname = "helvetica", fillcolor = "#ffffff"]
+	    all_snv; non_coding_snv; coding_snv; synonymous_snv; non_synonymous_snv; missense_snv; nonsense_snv;
+
+    # define nodes
+    all_snv [label="Single Nucleotide Variant"];
+    non_coding_snv [label="Non-coding"];
+    coding_snv [label="Coding"];
+    synonymous_snv [label="Synonymous"];
+    non_synonymous_snv [label="Non-synonymous"];
+
+    # non-synonymous
+    missense_snv [label="Missense"];
+    nonsense_snv [label="Nonsense"];
+    #ns_dummy [label="blahblah", style=invis];
+
+    # non-coding
+    #utr_affecting [label="UTR-affecting"];
+    #splicing [label="Splicing"];
+    #nc_other [label="Other"];
+
+    # define edges
+    all_snv -> non_coding_snv;
+    all_snv -> coding_snv;
+    #non_coding_snv -> utr_affecting;
+    #non_coding_snv -> splicing;
+    #non_coding_snv -> nc_other;
+    coding_snv -> synonymous_snv;
+    coding_snv -> non_synonymous_snv;
+    #coding_snv -> ns_dummy [style=invis];
+    non_synonymous_snv -> missense_snv;
+    non_synonymous_snv -> nonsense_snv;
+
+    #subgraph cluster_0 {
+	#	style=invis;
+
+    #    non_coding_snv;
+		#utr_affecting;
+		#splicing;
+		#nc_other;
+	#}
+
+	#subgraph cluster_1 {
+	#	style=invis;
+
+	#	coding_snv;
+	#	synonymous_snv;
+	#	non_synonymous_snv;
+	#}
+
+    #{ rank=same; non_coding_snv; coding_snv; }
+}
