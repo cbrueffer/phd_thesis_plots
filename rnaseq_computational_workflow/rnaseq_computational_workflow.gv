@@ -1,5 +1,8 @@
+#
+# Computational RNA-seq workflow
+#
+
 digraph G {
-    #label = "General RNA-seq Workflow";
     graph [splines=ortho];
     newrank=true;
 
@@ -10,36 +13,77 @@ digraph G {
         start; end;
     node[shape="rect", style="", fixedsize=true, width="2.4", height="0.75", fontsize=12, fontname = "helvetica", fillcolor = "#ffffff"]
 	    base_calling; demultiplexing; alignment; duplicate_marking; trimming; expression_estimation;
-	    variant_calling;
+	    variant_calling; variant_anno; differential_expression; classifier_training;
 	node[shape="diamond", style="", fixedsize=true, width="2.4", height="0.75"]
-		clean_fastq_files; bam_files;
+		base_calls; demultiplexed_fastq; clean_fastq_files; bam_files; bam_files_markdup;
 
     # define nodes
-    start [label="Sequencer base-calling files"];
-    base_calling [label="Base calling"];
+    start [label="Sequencing"];
+    base_calling [label="On-instrument base calling"];
+    base_calls [label="Raw base calls"];
     demultiplexing [label="Sample Demultiplexing"];
-#    clean_fastq_files [label="Clean FASTQ files"];
-#    bam_files [label="Aligned BAM files"];
-#    alignment [label="Alignment"];
-#    duplicate_marking [label="Duplicate Marking"];
+    demultiplexed_fastq [label="Per-sample FASTQ files"];
     trimming [label="Adapter/Quality Trimming"];
-#    expression_estimation [label="Expression estimation"];
-#    differential_expression = [label="Differential expression"];
-#    variant_calling [label="Variant calling"];
-#    variant_anno = [label="Variant annotation"];
-#    end [label = "End"];
+    clean_fastq_files [label="Clean FASTQ files"];
+    alignment [label="Alignment"];
+    bam_files [label="Aligned BAM files"];
+    bam_files_markdup [label="Duplicate\nmarked BAM files"];
+    duplicate_marking [label="Duplicate Marking"];
+    expression_estimation [label="Expression estimation"];
+    differential_expression [label="Differential expression"];
+    classifier_training [label="Classifier training"]
+    variant_calling [label="Variant calling"];
+    variant_anno [label="Variant annotation"];
+    end [label="End"];
 
     # define edges
     start -> base_calling;
-    base_calling -> demultiplexing;
-    demultiplexing -> trimming;
-#    trimming -> clean_fastq_files;
-#    clean_fastq_files -> alignment;
-#    alignment -> duplicate_marking;
-#    duplicate_marking -> bam_files;
-#    bam_files -> expression_estimation;
-#    bam_files -> variant_calling;
-#    expression_estimation -> end;
-#    variant_calling -> end;
+    base_calling -> base_calls
+    base_calls -> demultiplexing;
+    demultiplexing -> demultiplexed_fastq;
+    demultiplexed_fastq -> trimming;
+    trimming -> clean_fastq_files;
+    clean_fastq_files -> alignment;
+    alignment -> bam_files;
+    bam_files -> duplicate_marking;
+    duplicate_marking -> bam_files_markdup;
+    bam_files_markdup -> expression_estimation;
+    bam_files_markdup -> variant_calling;
+    expression_estimation -> differential_expression;
+    expression_estimation -> classifier_training;
+    differential_expression -> end;
+    variant_calling -> variant_anno;
+    variant_anno -> end;
+
+    subgraph cluster_sequencing {
+		style=dashed;
+		color=blue;
+
+        start;
+        base_calling;
+        base_calls;
+	}
+
+	subgraph cluster_prealign {
+		style=dashed;
+		color=blue;
+
+        demultiplexing;
+        demultiplexed_fastq;
+        trimming;
+        clean_fastq_files;
+	}
+
+	subgraph cluster_postalign {
+		style=dashed;
+		color=blue;
+
+		alignment;
+        bam_files;
+        duplicate_marking;
+        bam_files_markdup;
+	}
+
+	{ rank=same; base_calling; demultiplexing; alignment}
 
 }

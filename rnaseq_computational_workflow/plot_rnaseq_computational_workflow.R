@@ -13,8 +13,8 @@ library(DiagrammeR)
 library(DiagrammeRsvg)
 library(rsvg)
 
-DiagrammeR::grViz("rnaseq_general_workflow.gv")
+DiagrammeR::grViz("rnaseq_computational_workflow.gv")
 
-#export_svg(DiagrammeR::grViz("rnaseq-general-workflow.gv")) %>%
+#export_svg(DiagrammeR::grViz("rnaseq_computational_workflow.gv")) %>%
 #    charToRaw %>%
 #    rsvg_pdf("rnaseq-general-workflow.pdf")
