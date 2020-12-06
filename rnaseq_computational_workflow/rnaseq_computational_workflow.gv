@@ -6,7 +6,9 @@ digraph G {
     graph [splines=ortho];
     newrank=true;
 
-    node[nodesep=0.1, ranksep=0.6, fontsize=15];
+    nodesep=0.5;
+
+    node[nodesep=1.1, ranksep=1.6, penwidth=1.4, fontsize=17];
     edge[weight=1.6];
 
     node[shape="box", style="rounded", fontsize=12, fontname = "helvetica"]
@@ -23,7 +25,7 @@ digraph G {
     base_calls [label="Raw base calls"];
     demultiplexing [label="Sample Demultiplexing"];
     demultiplexed_fastq [label="Per-sample FASTQ files"];
-    trimming [label="Adapter/Quality Trimming"];
+    trimming [label="Read Trimming and Filtering"];
     clean_fastq_files [label="Clean FASTQ files"];
     alignment [label="Alignment"];
     bam_files [label="Aligned BAM files"];
@@ -33,8 +35,8 @@ digraph G {
     differential_expression [label="Differential expression"];
     classifier_training [label="Classifier training"]
     variant_calling [label="Variant calling"];
-    variant_anno [label="Variant annotation"];
-    end [label="End"];
+    variant_anno [label="Variant annotation / filtering"];
+    end [label="Downstream Analysis"];
 
     # define edges
     start -> base_calling;
@@ -49,24 +51,24 @@ digraph G {
     duplicate_marking -> bam_files_markdup;
     bam_files_markdup -> expression_estimation;
     bam_files_markdup -> variant_calling;
-    expression_estimation -> differential_expression;
     expression_estimation -> classifier_training;
+    expression_estimation -> differential_expression;
     differential_expression -> end;
     variant_calling -> variant_anno;
     variant_anno -> end;
 
     subgraph cluster_sequencing {
 		style=dashed;
-		color=blue;
-
-        start;
+		color=white;
+		penwidth=2;
         base_calling;
         base_calls;
 	}
 
 	subgraph cluster_prealign {
 		style=dashed;
-		color=blue;
+		color=white;
+		penwidth=2;
 
         demultiplexing;
         demultiplexed_fastq;
@@ -76,7 +78,8 @@ digraph G {
 
 	subgraph cluster_postalign {
 		style=dashed;
-		color=blue;
+		color=white;
+		penwidth=2;
 
 		alignment;
         bam_files;
@@ -84,6 +87,20 @@ digraph G {
         bam_files_markdup;
 	}
 
-	{ rank=same; base_calling; demultiplexing; alignment}
+	subgraph cluster_analysis {
+		style=dashed;
+		color=white;
+		penwidth=2;
+		ordering="in"
+
+        classifier_training;
+        expression_estimation;
+        differential_expression;
+        variant_calling;
+        variant_anno;
+        end;
+	}
+
+	{ rank=same; base_calling; demultiplexing; alignment; }
 
 }
